@@ -1,5 +1,6 @@
 import { OauthSignIn } from '@/components/auth/oauth-signin';
-import SignInForm from '@/components/forms/signin-form';
+
+import SignUpForm from '@/components/forms/signup-form';
 import { Shell } from '@/components/shell/shell';
 import {
   Card,
@@ -9,7 +10,6 @@ import {
   CardFooter,
   CardTitle,
 } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 
 export default function SignInPage() {
@@ -36,28 +36,19 @@ export default function SignInPage() {
               </span>
             </div>
           </div>
-          <SignInForm />
+          <SignUpForm />
         </CardContent>
-        <CardFooter className='flex flex-wrap items-center justify-between gap-2'>
+        <CardFooter>
           <div className='text-sm text-muted-foreground'>
-            <span className='mr-1 hidden sm:inline-block'>
-              Don&apos;t have an account?
-            </span>
+            Already have an account?{' '}
             <Link
-              aria-label='Sign up'
-              href='/signup'
+              aria-label='Sign in'
+              href='/signin'
               className='text-primary underline-offset-4 transition-colors hover:underline'
             >
-              Sign up
+              Sign in
             </Link>
           </div>
-          <Link
-            aria-label='Reset password'
-            href='/signin/reset-password'
-            className='text-sm text-primary underline-offset-4 transition-colors hover:underline'
-          >
-            Reset password
-          </Link>
         </CardFooter>
       </Card>
     </Shell>
