@@ -1,12 +1,10 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import '../styles/globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+
 import { cn } from '@/lib/utils';
 import { fontMono, fontSans } from '@/lib/fonts';
 import { Providers } from '@/components/providers';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Online Marketplace',
@@ -28,7 +26,7 @@ export default function RootLayout({
             fontMono.variable
           )}
         >
-          <Providers attribute='class' defaultTheme='system' enableSystem>
+          <Providers attribute='class' defaultTheme='dark' enableSystem>
             {children}
           </Providers>
         </body>

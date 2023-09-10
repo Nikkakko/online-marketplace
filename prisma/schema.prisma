@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+//define category enum type
+enum Category {
+  electronics
+  clothing
+  shoes
+  accessories
+  sports
+  outdoor
+}
+
+//define user model
+
+model Product {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String
+  title       String
+  description String
+  images      String[]
+  category    Category @default(electronics)
+
+  seller String
+
+  price    Float
+  quantity Int
+  rating   Float // You can use a Float for product ratings for more precision
+  reviews  Review[]
+
+  comment   Comment[]
+
+
+  // Add other fields as needed
+  Cart    Cart?   @relation(fields: [cartId], references: [id])
+  cartId  String? @db.ObjectId
+  Order   Order?  @relation(fields: [orderId], references: [id])
+  orderId String? @db.ObjectId
+
+  // timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId    String
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @db.ObjectId
+
+  rating    Int
+
+  // timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comment {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  text       String
+
+  // timestamps
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Relationships
+  userId    String
+
+  // Relationships
+  productId String @db.ObjectId
+  product  Product @relation(fields: [productId], references: [id])
+
+}
+
+model Cart {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String
+  products Product[]
+
+  // timestamps
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String
+  products Product[]
+  isPaid   Boolean   @default(false)
+  
+
+  amount Float
+
+  // timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// add Address model
+model Address {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+
+  fullName   String
+  address    String
+  city       String
+  postalCode String
+  country    String
+  // timestamps
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
