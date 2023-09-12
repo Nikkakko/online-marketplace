@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextIndex","fullTextSearch"]
 }
 
 datasource db {
@@ -12,23 +13,22 @@ datasource db {
 
 //define category enum type
 enum Category {
-  electronics
   clothing
   shoes
   accessories
   sports
-  outdoor
 }
 
 //define user model
 
-model Product {
+model Products {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   userId      String
   title       String
   description String
   images      String[]
-  category    Category @default(electronics)
+  category    Category @default(clothing)
+  
 
   seller String
 
@@ -56,7 +56,7 @@ model Review {
 
   userId    String
 
-  product   Product @relation(fields: [productId], references: [id])
+  product   Products @relation(fields: [productId], references: [id])
   productId String  @db.ObjectId
 
   rating    Int
@@ -79,14 +79,14 @@ model Comment {
 
   // Relationships
   productId String @db.ObjectId
-  product  Product @relation(fields: [productId], references: [id])
+  product  Products @relation(fields: [productId], references: [id])
 
 }
 
 model Cart {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   userId   String
-  products Product[]
+  products Products[]
 
   // timestamps
   createdAt DateTime @default(now())
@@ -95,7 +95,7 @@ model Cart {
 model Order {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   userId   String
-  products Product[]
+  products Products[]
   isPaid   Boolean   @default(false)
   
 

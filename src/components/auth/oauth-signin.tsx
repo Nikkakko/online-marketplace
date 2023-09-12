@@ -23,6 +23,7 @@ export function OauthSignIn() {
 
   async function oauthSignIn(provider: OAuthStrategy) {
     if (!signInLoaded) return null;
+
     try {
       setIsLoading(provider);
       await signIn.authenticateWithRedirect({
