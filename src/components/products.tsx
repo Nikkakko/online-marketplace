@@ -15,12 +15,16 @@ import { cn } from '@/lib/utils';
 import qs from 'query-string';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import { ProductCard } from './cards/product-card';
+import PaginationButton from './pagination-button';
 
 type Props = {
-  products: Products;
+  products: Products[];
+  category: string;
+  pageCount: number;
 };
 
-const Products = ({ products }: Props) => {
+const Products = ({ products, category, pageCount }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -29,6 +33,8 @@ const Products = ({ products }: Props) => {
 
   //search params
   const sort = searchParams.get('sort') ?? 'createdAt_desc';
+  const page = searchParams.get('page') ?? '1';
+  const per_page = searchParams.get('per_page') ?? '8';
 
   const handleSortChange = (value: string) => {
     const query = {
@@ -76,7 +82,31 @@ const Products = ({ products }: Props) => {
         </DropdownMenu>
       </div>
 
-      <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'></div>
+      {!products.length && (
+        <div className='flex flex-col items-center justify-center py-12'>
+          <Icons.store className='w-12 h-12 text-gray-400' />
+          <p className='mt-4 text-lg font-medium text-center text-gray-500'>
+            No products found
+          </p>
+        </div>
+      )}
+
+      <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+        {products.map(product => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </div>
+
+      {products.length ? (
+        <PaginationButton
+          pageCount={pageCount}
+          page={page}
+          per_page={per_page}
+          sort={sort}
+          router={router}
+          pathname={pathname}
+        />
+      ) : null}
     </section>
   );
 };
