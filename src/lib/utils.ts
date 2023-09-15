@@ -21,3 +21,19 @@ export function slugify(str: string) {
     .replace(/[^\w-]+/g, '')
     .replace(/--+/g, '-');
 }
+
+export function formatPrice(
+  price: number,
+  options: {
+    currency?: 'USD' | 'EUR' | 'GBP' | 'BDT';
+    notation?: Intl.NumberFormatOptions['notation'];
+  }
+) {
+  const { currency = 'USD', notation = 'compact' } = options;
+
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+    notation,
+  }).format(price);
+}

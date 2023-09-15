@@ -55,6 +55,8 @@ import {
   CircuitBoard,
   Shirt,
   Github,
+  PlusIcon,
+  MinusIcon,
   type LucideIcon,
   type LucideProps,
   Trophy,
@@ -120,6 +122,8 @@ export const Icons = {
   sports: Trophy,
   clothing: Shirt,
   github: Github,
+  plus: PlusIcon,
+  minus: MinusIcon,
   logo: (props: LucideProps) => (
     <svg
       xmlns='http://www.w3.org/2000/svg'

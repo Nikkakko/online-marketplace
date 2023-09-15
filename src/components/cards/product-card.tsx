@@ -1,4 +1,5 @@
 'use client';
+import * as React from 'react';
 import { Products } from '@prisma/client';
 import {
   Card,
@@ -15,6 +16,8 @@ import { Icons } from '../icons';
 import { AspectRatio } from '../ui/aspect-ratio';
 import { Separator } from '../ui/separator';
 import { Button } from '../ui/button';
+import { addToCart } from '@/app/_actions/cart';
+import { useToast } from '../ui/use-toast';
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: Pick<
@@ -28,6 +31,9 @@ export function ProductCard({
   className,
   ...props
 }: ProductCardProps) {
+  const [isPending, startTransition] = React.useTransition();
+  const { toast } = useToast();
+
   return (
     <Card className={cn('h-full overflow-hidden rounded-sm')} {...props}>
       <Link href={`/product/${product.id}`}>
@@ -98,10 +104,28 @@ export function ProductCard({
         <Button
           type='button'
           variant='outline'
-          className='flex items-center space-x-1 text-sm font-medium  '
+          className='flex items-center space-x-1 text-sm font-medium '
+          disabled={isPending}
+          onClick={() => {
+            startTransition(async () => {
+              try {
+                await addToCart(product.id, 1);
+                toast({
+                  title: 'Added to cart',
+                  description: 'Product added to cart',
+                });
+              } catch (error) {
+                toast({
+                  title: 'Error',
+                  description: 'Something went wrong, please try again.',
+                });
+              }
+            });
+          }}
         >
+          {isPending && <Icons.spinner className='w-4 h-4 animate-spin' />}
           <Icons.cart className='w-4 h-4' />
-          <span>Add to cart</span>
+          Add to cart
         </Button>
       </div>
     </Card>

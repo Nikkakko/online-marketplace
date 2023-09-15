@@ -29,8 +29,6 @@ const Products = ({ products, category, pageCount }: Props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  console.log(products);
-
   //search params
   const sort = searchParams.get('sort') ?? 'createdAt_desc';
   const page = searchParams.get('page') ?? '1';

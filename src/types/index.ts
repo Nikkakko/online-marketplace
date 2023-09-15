@@ -1,8 +1,10 @@
-import type { Product } from '@prisma/client';
+import type { Products } from '@prisma/client';
 import { type Icons } from '@/components/icons';
+import * as z from 'zod';
+import { cartItemSchema, cartLineItemSchema } from '@/lib/validations/cart';
 
 export interface Category {
-  title: Product['category'];
+  title: Products['category'];
   image: string;
   icon: React.ComponentType<{ className?: string }>;
   subcategories: Subcategory[];
@@ -39,3 +41,6 @@ export interface NavItemWithOptionalChildren extends NavItem {
 }
 
 export type MainNavItem = NavItemWithOptionalChildren;
+
+export type CartItem = z.infer<typeof cartItemSchema>;
+export type CartLineItem = z.infer<typeof cartLineItemSchema>;

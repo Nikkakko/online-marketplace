@@ -19,6 +19,14 @@ enum Category {
   sports
 }
 
+//define type for Cart Items
+type CartItemType {
+  id String
+  quantity Int
+}
+
+
+
 //define user model
 
 model Products {
@@ -41,7 +49,11 @@ model Products {
 
 
   // Add other fields as needed
-  Cart    Cart?   @relation(fields: [cartId], references: [id])
+  cartItem  CartItem[]
+  
+  
+
+  // cart    Cart?  @relation(fields: [cartId], references: [id])
   cartId  String? @db.ObjectId
   Order   Order?  @relation(fields: [orderId], references: [id])
   orderId String? @db.ObjectId
@@ -83,11 +95,23 @@ model Comment {
 
 }
 
+model CartItem {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  quantity  Int     @default(1) // Default quantity is 1
+
+  // Relationships
+  product   Products @relation(fields: [productId], references: [id])
+  productId String  @db.ObjectId
+
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  cartId    String  @db.ObjectId
+}
+
 model Cart {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   userId   String
-  products Products[]
-
+  // Relationships
+  cartItems CartItem[]
   // timestamps
   createdAt DateTime @default(now())
 }
