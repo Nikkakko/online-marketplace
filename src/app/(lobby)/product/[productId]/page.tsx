@@ -46,12 +46,14 @@ const ProductDetail = async ({ params }: Props) => {
 
   const otherProducts = await db.products.findMany({
     where: {
-      userId: userId as string,
+      seller: product?.seller,
+
       id: { not: productId },
     },
     orderBy: {
       createdAt: 'desc',
     },
+    // take: 4,
   });
 
   if (!product) {
@@ -111,7 +113,7 @@ const ProductDetail = async ({ params }: Props) => {
           </div>
         </div>
       </div>
-      {otherProducts.length > 0 ? (
+      {otherProducts?.length > 0 ? (
         <div className='overflow-hidden md:pt-6'>
           <h2 className='line-clamp-1 flex-1 text-2xl font-normal '>
             More products from

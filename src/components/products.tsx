@@ -1,5 +1,6 @@
 'use client';
 import { Products } from '@prisma/client';
+import * as React from 'react';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,7 +15,6 @@ import { sortOptions } from '@/config/products';
 import { cn } from '@/lib/utils';
 import qs from 'query-string';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { useEffect } from 'react';
 import { ProductCard } from './cards/product-card';
 import PaginationButton from './pagination-button';
 
@@ -27,6 +27,7 @@ type Props = {
 const Products = ({ products, category, pageCount }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
+  const [isPending, startTransition] = React.useTransition();
   const searchParams = useSearchParams();
 
   //search params
@@ -49,6 +50,28 @@ const Products = ({ products, category, pageCount }: Props) => {
 
     router.push(url);
   };
+
+  const createQueryString = React.useCallback(
+    (params: Record<string, string | number | null>) => {
+      const query = {
+        sort: params.sort ?? sort,
+        page: params.page ?? page,
+        per_page: params.per_page ?? per_page,
+      };
+
+      const url = qs.stringifyUrl(
+        {
+          url: pathname,
+          query,
+        },
+        { skipEmptyString: true, skipNull: true }
+      );
+
+      router.push(url);
+    },
+    [searchParams]
+  );
+
   return (
     <section className='flex flex-col space-y-6'>
       <div className='flex item-start'>
@@ -103,6 +126,9 @@ const Products = ({ products, category, pageCount }: Props) => {
           sort={sort}
           router={router}
           pathname={pathname}
+          isPending={isPending}
+          startTransition={startTransition}
+          createQueryString={createQueryString}
         />
       ) : null}
     </section>

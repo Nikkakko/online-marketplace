@@ -92,19 +92,16 @@ export function ProductCard({
 
       <Separator />
 
-      <div className='flex items-center justify-between p-4 space-x-2'>
-        <p
-          className='
-          text-sm font-medium text-muted-foreground
-          line-clamp-1
-        '
-        >
-          Sold by {product.seller}
-        </p>
+      <div
+        className='flex items-center justify-between p-4 space-x-2
+        
+        lg:w-56
+      '
+      >
         <Button
           type='button'
           variant='outline'
-          className='flex items-center space-x-1 text-sm font-medium '
+          className='flex items-center space-x-1 text-sm font-medium md:w-full'
           disabled={isPending}
           onClick={() => {
             startTransition(async () => {
