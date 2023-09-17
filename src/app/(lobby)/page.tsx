@@ -5,8 +5,16 @@ import { productCategories } from '@/config/products';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Balancer } from 'react-wrap-balancer';
+import db from '@/lib/db';
+import { ProductCard } from '@/components/cards/product-card';
 
 export default async function IndexPage() {
+  const someProducts = await db.products.findMany({
+    take: 4,
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
   return (
     <Shell className='gap-12'>
       <section
@@ -65,17 +73,27 @@ export default async function IndexPage() {
       </section>
 
       <section id='featured' className='py-6 md:pt-10 lg:pt-24'>
-        <div className='mx-auto flex flex-col items-center text-center space-y-4 max-w-[58rem]'>
-          <h2 className='text-2xl font-bold text-center md:text-3xl'>
+        <div className='flex items-center'>
+          <h2 className='flex-1 text-2xl font-medium sm:text-3xl'>
             Featured products
           </h2>
-
-          <Balancer className='max-w-[46rem] text-lg text-muted-foreground sm:text-xl'>
-            Featured products from our sellers and stores on the marketplace.
-          </Balancer>
+          <Link
+            href='/products'
+            className={cn(
+              buttonVariants({
+                size: 'sm',
+              })
+            )}
+          >
+            View all
+            <span className='sr-only'>View all products</span>
+          </Link>
         </div>
-
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4'></div>
+        <div className='grid grid-cols-1 mt-4 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+          {someProducts.map(product => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
       </section>
     </Shell>
   );

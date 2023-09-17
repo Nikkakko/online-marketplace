@@ -38,7 +38,7 @@ export function CartLineItems({ items }: CartLineItemsProps) {
 
             <div className='flex flex-col'>
               <p className='text-sm font-medium '>{item.title}</p>
-              <p className='text-sm '>
+              <p className='text-sm text-muted-foreground '>
                 {formatPrice(item.price, {
                   currency: 'USD',
                   notation: 'standard',

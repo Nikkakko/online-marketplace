@@ -11,7 +11,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 import { getCartItems } from '@/app/_actions/cart';
 import { Badge } from '../ui/badge';
 import { CartLineItems } from './cart-line-items';
@@ -53,7 +53,9 @@ const CartSheet = async () => {
       </SheetTrigger>
       <SheetContent className='flex w-full flex-col pr-0 sm:max-w-lg'>
         <SheetHeader className='px-1'>
-          <SheetTitle>Cart</SheetTitle>
+          <SheetTitle>
+            Cart ({itemCount} {itemCount === 1 ? 'item' : 'items'})
+          </SheetTitle>
         </SheetHeader>
         <div className='pr-6'>
           <Separator />
@@ -61,9 +63,39 @@ const CartSheet = async () => {
 
         {/* empty cart to change if items is 0 */}
         {cartItems.length > 0 ? (
-          <div className='flex flex-1 flex-col gap-5 overflow-hidden'>
+          <>
             <CartLineItems items={cartLineItems} />
-          </div>
+            <div className='flex flex-1 flex-col gap-5 overflow-hidden'></div>
+
+            <div className='space-y-4 pr-6'>
+              <Separator />
+              <div className='flex'>
+                <span className='flex-1'>Shipping</span>
+                <span>Free</span>
+              </div>
+
+              <div className='flex'>
+                <span className='flex-1'>Total</span>
+                <span>${cartTotal.toFixed(2)}</span>
+              </div>
+
+              <SheetFooter>
+                <SheetTrigger asChild>
+                  <Link
+                    href='/cart'
+                    className={cn(
+                      buttonVariants({
+                        size: 'sm',
+                        className: 'w-full',
+                      })
+                    )}
+                  >
+                    Continue to checkout
+                  </Link>
+                </SheetTrigger>
+              </SheetFooter>
+            </div>
+          </>
         ) : (
           <div className='flex h-full flex-col items-center justify-center space-y-1'>
             <Icons.cart

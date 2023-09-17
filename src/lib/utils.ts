@@ -37,3 +37,14 @@ export function formatPrice(
     notation,
   }).format(price);
 }
+
+export function truncate(str: string, length: number) {
+  return str.length > length ? str.substring(0, length - 3) + '...' : str;
+}
+
+export function toTitleCase(str: string) {
+  return str.replace(
+    /\w\S*/g,
+    txt => txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase()
+  );
+}
