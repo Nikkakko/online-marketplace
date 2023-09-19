@@ -120,8 +120,8 @@ export function ProductCard({
             });
           }}
         >
-          {isPending && <Icons.spinner className='w-4 h-4 animate-spin' />}
-          <Icons.cart className='w-4 h-4' />
+          {isPending && <Icons.spinner className='w-4 h-4 animate-spin mr-2' />}
+          <Icons.cart className='w-4 h-4 mr-2' />
           Add to cart
         </Button>
       </div>

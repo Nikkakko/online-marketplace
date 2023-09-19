@@ -35,22 +35,6 @@ const Products = ({ products, category, pageCount }: Props) => {
   const page = searchParams.get('page') ?? '1';
   const per_page = searchParams.get('per_page') ?? '8';
 
-  const handleSortChange = (value: string) => {
-    const query = {
-      sort: value,
-    };
-
-    const url = qs.stringifyUrl(
-      {
-        url: pathname,
-        query,
-      },
-      { skipEmptyString: true, skipNull: true }
-    );
-
-    router.push(url);
-  };
-
   const createQueryString = React.useCallback(
     (params: Record<string, string | number | null>) => {
       const query = {
@@ -94,7 +78,11 @@ const Products = ({ products, category, pageCount }: Props) => {
                   'flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-left',
                   option.value === sort && 'bg-gray-100 text-gray-900'
                 )}
-                onClick={() => handleSortChange(option.value)}
+                onClick={() =>
+                  createQueryString({
+                    sort: option.value,
+                  })
+                }
               >
                 {option.label}
               </DropdownMenuItem>

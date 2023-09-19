@@ -1,7 +1,6 @@
 import React from 'react';
 import db from '@/lib/db';
 import { notFound } from 'next/navigation';
-import { auth } from '@clerk/nextjs';
 import { Shell } from '@/components/shell/shell';
 import { BreadCrumbs } from '@/components/BreadCrumbs';
 import { formatPrice, toTitleCase } from '@/lib/utils';
@@ -16,6 +15,8 @@ import {
 
 import AddToCartForm from '@/components/AddToCartForm';
 import { ProductCard } from '@/components/cards/product-card';
+import ReviewCard from '@/components/cards/ReviewCard';
+import ReviewForm from '@/components/forms/review-form';
 
 interface Props {
   params: {
@@ -25,8 +26,6 @@ interface Props {
 
 const ProductDetail = async ({ params }: Props) => {
   const { productId } = params;
-
-  const { userId } = auth();
 
   const product = await db.products.findUnique({
     where: {
@@ -54,6 +53,18 @@ const ProductDetail = async ({ params }: Props) => {
       createdAt: 'desc',
     },
     // take: 4,
+  });
+
+  const productReviews = await db.review.findMany({
+    where: {
+      productId,
+    },
+
+    orderBy: {
+      createdAt: 'desc',
+    },
+
+    take: 4,
   });
 
   if (!product) {
@@ -132,6 +143,26 @@ const ProductDetail = async ({ params }: Props) => {
           </div>
         </div>
       ) : null}
+
+      {productReviews?.length > 0 ? (
+        <div className='overflow-hidden md:pt-6'>
+          <div className='flex items-center justify-between'>
+            <h2 className='line-clamp-1 text-2xl font-normal '>Reviews</h2>
+            <ReviewForm productName={product.title} productId={product.id} />
+          </div>
+          <div className='overflow-x-auto pb-2 pt-6'>
+            <div className='flex w-fit gap-4'>
+              {productReviews.map(review => (
+                <ReviewCard key={review.id} review={review} />
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className='flex items-center justify-start'>
+          <ReviewForm productName={product.title} productId={product.id} />
+        </div>
+      )}
     </Shell>
   );
 };

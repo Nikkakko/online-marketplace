@@ -20,3 +20,25 @@ export const getProductsSchema = z.object({
     .optional()
     .nullable(),
 });
+
+export const reviewProductSchema = z.object({
+  rating: z.number().min(1).max(5),
+  title: z
+    .string({
+      required_error: 'Please enter a title for your review',
+    })
+    .min(3, {
+      message: 'Title must be at least 3 characters long',
+    })
+    .max(100)
+    .regex(/^[a-zA-Z0-9 ]+$/, {
+      message: 'Title must only contain letters, numbers and spaces',
+    }),
+
+  description: z
+    .string()
+    .min(10, {
+      message: 'Description must be at least 10 characters long',
+    })
+    .max(500),
+});

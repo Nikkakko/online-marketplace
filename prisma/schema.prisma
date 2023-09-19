@@ -71,6 +71,8 @@ model Review {
   product   Products @relation(fields: [productId], references: [id])
   productId String  @db.ObjectId
 
+  title     String
+  description      String
   rating    Int
 
   // timestamps

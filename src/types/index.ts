@@ -33,6 +33,15 @@ export interface NavItem {
   description?: string;
 }
 
+export interface Review {
+  id: string;
+  title: string;
+  description: string;
+  rating: number;
+  userId: string;
+  createdAt: Date;
+}
+
 export interface NavItemWithChildren extends NavItem {
   items: NavItemWithChildren[];
 }
