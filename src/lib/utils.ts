@@ -6,12 +6,19 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getUserEmail(user: User | null) {
+export function getUserEmail(user: User | null | undefined) {
   const email =
     user?.emailAddresses?.find(e => e.id === user.primaryEmailAddressId)
       ?.emailAddress ?? '';
 
   return email;
+}
+
+export function getUserFullName(user: User | null) {
+  const firstName = user?.firstName ?? '';
+  const lastName = user?.lastName ?? '';
+
+  return `${firstName} ${lastName}`;
 }
 
 export function slugify(str: string) {
@@ -55,4 +62,15 @@ export function formatDate(date: Date | string | number) {
     day: 'numeric',
     year: 'numeric',
   }).format(new Date(date));
+}
+
+export function formatTime(date: Date | string | number) {
+  return new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+  }).format(new Date(date));
+}
+
+export function absoluteUrl(path: string) {
+  return `${process.env.NEXT_PUBLIC_APP_URL}${path}`;
 }

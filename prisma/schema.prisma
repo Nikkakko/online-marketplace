@@ -45,8 +45,6 @@ model Products {
   rating   Float // You can use a Float for product ratings for more precision
   reviews  Review[]
 
-  comment   Comment[]
-
 
   // Add other fields as needed
   cartItem  CartItem[]
@@ -55,6 +53,7 @@ model Products {
 
   // cart    Cart?  @relation(fields: [cartId], references: [id])
   cartId  String? @db.ObjectId
+
   Order   Order?  @relation(fields: [orderId], references: [id])
   orderId String? @db.ObjectId
 
@@ -80,22 +79,7 @@ model Review {
   updatedAt DateTime @updatedAt
 }
 
-model Comment {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  text       String
 
-  // timestamps
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-
-  // Relationships
-  userId    String
-
-  // Relationships
-  productId String @db.ObjectId
-  product  Products @relation(fields: [productId], references: [id])
-
-}
 
 model CartItem {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -146,3 +130,29 @@ model Address {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
+
+// limit the free products to 3
+
+model UserProductLimit {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique
+
+  limit Int @default(0)
+
+  // timestamps
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+
+
+model UserSubscription {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @unique
+  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
+  stripePriceId          String?   @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+}
+
+

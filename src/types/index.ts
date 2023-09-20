@@ -53,3 +53,5 @@ export type MainNavItem = NavItemWithOptionalChildren;
 
 export type CartItem = z.infer<typeof cartItemSchema>;
 export type CartLineItem = z.infer<typeof cartLineItemSchema>;
+
+export type SidebarNavItem = NavItemWithChildren;

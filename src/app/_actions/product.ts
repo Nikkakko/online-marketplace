@@ -1,5 +1,6 @@
 'use server';
 import {
+  addProductsSchema,
   getProductsSchema,
   reviewProductSchema,
 } from '@/lib/validations/product';
@@ -8,6 +9,7 @@ import { type z } from 'zod';
 import db from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { revalidatePath } from 'next/cache';
+import { getUserEmail } from '@/lib/utils';
 
 export async function getProductsAction(
   input: z.infer<typeof getProductsSchema>
@@ -49,6 +51,33 @@ export async function getProductsAction(
   return {
     products: products,
     count: count,
+  };
+}
+
+export async function addProductsAction(
+  input: z.infer<typeof addProductsSchema>
+) {
+  const { title, description, price, category, images } = input;
+  const { userId, user } = auth();
+  const sellerEmail = getUserEmail(user);
+
+  const product = await db.products.create({
+    data: {
+      title: title,
+      description: description,
+      quantity: 1,
+      rating: 0,
+      seller: sellerEmail.toLowerCase().split('@')[0],
+      price: price,
+      category: category,
+      images: images,
+      userId: userId as string,
+    },
+  });
+
+  revalidatePath('/');
+  return {
+    product: product,
   };
 }
 

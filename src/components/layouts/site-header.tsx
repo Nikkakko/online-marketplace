@@ -74,6 +74,16 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                         <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href='/dashboard/stores'>
+                        <Icons.terminal
+                          className='mr-2 h-4 w-4'
+                          aria-hidden='true'
+                        />
+                        Dashboard
+                        <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+                      </Link>
+                    </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
