@@ -1,9 +1,11 @@
+import FreeProductCounter from '@/components/free-counter';
 import SidebarNav from '@/components/layouts/sidebar-nav';
 import { SiteHeader } from '@/components/layouts/site-header';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { dashboardConfig } from '@/config/dashboard';
 import { getProductLimitCount } from '@/lib/limit-count';
 import { checkSubscription } from '@/lib/subscription';
+
 import { currentUser } from '@clerk/nextjs';
 
 interface DashboardLayout {
@@ -12,8 +14,6 @@ interface DashboardLayout {
 
 export default async function LobbyLayout({ children }: DashboardLayout) {
   const user = await currentUser();
-  const productLimitcount = await getProductLimitCount();
-  const isPro = await checkSubscription();
 
   return (
     <div className='relative flex min-h-screen flex-col'>

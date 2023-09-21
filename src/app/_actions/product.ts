@@ -10,6 +10,9 @@ import db from '@/lib/db';
 import { auth } from '@clerk/nextjs';
 import { revalidatePath } from 'next/cache';
 import { getUserEmail } from '@/lib/utils';
+import { checkSubscription } from '@/lib/subscription';
+import { checkProductLimitCount, increaseCount } from '@/lib/limit-count';
+import { NextResponse } from 'next/server';
 
 export async function getProductsAction(
   input: z.infer<typeof getProductsSchema>
@@ -60,6 +63,13 @@ export async function addProductsAction(
   const { title, description, price, category, images } = input;
   const { userId, user } = auth();
   const sellerEmail = getUserEmail(user);
+
+  const isPro = await checkSubscription();
+  const freeTrial = await checkProductLimitCount();
+
+  if (!freeTrial && !isPro) {
+    return new NextResponse('Free trial limit reached', { status: 403 });
+  }
 
   const product = await db.products.create({
     data: {

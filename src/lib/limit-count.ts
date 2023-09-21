@@ -33,7 +33,7 @@ export const increaseCount = async () => {
   }
 };
 
-export const checkApiLimit = async () => {
+export const checkProductLimitCount = async () => {
   const { userId } = auth();
 
   if (!userId) return false;

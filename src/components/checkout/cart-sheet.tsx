@@ -15,6 +15,7 @@ import { cn, formatPrice } from '@/lib/utils';
 import { getCartItems } from '@/app/_actions/cart';
 import { Badge } from '../ui/badge';
 import { CartLineItems } from './cart-line-items';
+import CheckoutForm from '../forms/CheckoutForm';
 
 const CartSheet = async () => {
   // get carts
@@ -81,17 +82,7 @@ const CartSheet = async () => {
 
               <SheetFooter>
                 <SheetTrigger asChild>
-                  <Link
-                    href='/cart'
-                    className={cn(
-                      buttonVariants({
-                        size: 'sm',
-                        className: 'w-full',
-                      })
-                    )}
-                  >
-                    Continue to checkout
-                  </Link>
+                  <CheckoutForm />
                 </SheetTrigger>
               </SheetFooter>
             </div>
