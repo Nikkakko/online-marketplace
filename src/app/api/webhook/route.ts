@@ -35,6 +35,30 @@ export async function POST(req: Request, res: Response) {
     const addressString = addressComponents.filter(c => c !== null).join(', ');
 
     if (event.type === 'checkout.session.completed') {
+      if (session.metadata?.userId && !session.metadata?.cartItems) {
+        const subscription = await stripe.subscriptions.retrieve(
+          session.subscription as string
+        );
+
+        if (!session?.metadata?.userId) {
+          return new NextResponse('Invalid webhook request', {
+            status: 400,
+          });
+        }
+
+        await db.userSubscription.create({
+          data: {
+            userId: session?.metadata.userId,
+            stripeCustomerId: session.customer as string,
+            stripeSubscriptionId: subscription.id,
+            stripePriceId: subscription.items.data[0].price.id,
+            stripeCurrentPeriodEnd: new Date(
+              subscription.current_period_end * 1000
+            ),
+          },
+        });
+      }
+    } else {
       //get cart items from db
       const cartItems = await db.cartItem.findMany();
 
@@ -46,6 +70,27 @@ export async function POST(req: Request, res: Response) {
           },
         },
       });
+    }
+
+    if (event.type === 'invoice.payment_succeeded') {
+      if (session.metadata?.userId && !session.metadata?.cartItems) {
+        const subscription = await stripe.subscriptions.retrieve(
+          session.subscription as string
+        );
+
+        await db.userSubscription.update({
+          where: {
+            stripeSubscriptionId: subscription.id,
+          },
+
+          data: {
+            stripePriceId: subscription.items.data[0].price.id,
+            stripeCurrentPeriodEnd: new Date(
+              subscription.current_period_end * 1000
+            ),
+          },
+        });
+      }
     }
 
     return new NextResponse(null, {

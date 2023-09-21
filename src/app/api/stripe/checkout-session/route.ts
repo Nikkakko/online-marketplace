@@ -66,6 +66,7 @@ export async function POST(req: Request, res: Response) {
       metadata: {
         userId: userId,
         email: user.emailAddresses[0].emailAddress,
+        cartItems: JSON.stringify(cartItems),
       },
     });
 

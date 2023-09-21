@@ -22,7 +22,7 @@ const ProModal: React.FC<ProModalProps> = ({}) => {
   const onSubscribe = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('api/stripe');
+      const res = await axios.get('/api/stripe/subscription');
       window.location.href = res.data.url;
     } catch (error) {
       toast({
