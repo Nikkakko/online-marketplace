@@ -84,6 +84,9 @@ model Review {
 model CartItem {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   quantity  Int     @default(1) // Default quantity is 1
+  userId   String 
+  
+  
 
   // Relationships
   product   Products @relation(fields: [productId], references: [id])

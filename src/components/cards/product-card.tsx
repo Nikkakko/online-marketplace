@@ -34,6 +34,24 @@ export function ProductCard({
   const [isPending, startTransition] = React.useTransition();
   const { toast } = useToast();
 
+  const handleAddToCart = async (id: string, quantity: number) => {
+    try {
+      await addToCart(id, quantity);
+    } catch (error: any) {
+      if (error.message === 'Product is out of stock, please try again later') {
+        toast({
+          title: 'Could not add to cart',
+          description: 'Product is out of stock, please try again later',
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Something went wrong, please try again later',
+        });
+      }
+    }
+  };
+
   return (
     <Card className={cn('h-full overflow-hidden rounded-sm')} {...props}>
       <Link href={`/product/${product.id}`}>
@@ -105,18 +123,7 @@ export function ProductCard({
           disabled={isPending}
           onClick={() => {
             startTransition(async () => {
-              try {
-                await addToCart(product.id, 1);
-                toast({
-                  title: 'Added to cart',
-                  description: 'Product added to cart',
-                });
-              } catch (error) {
-                toast({
-                  title: 'Error',
-                  description: 'Something went wrong, please try again.',
-                });
-              }
+              await handleAddToCart(product.id, 1);
             });
           }}
         >

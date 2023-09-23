@@ -18,8 +18,21 @@ export async function POST(req: Request, res: Response) {
       });
     }
 
+    const userCart = await db.cart.findFirst({
+      where: {
+        userId: userId,
+      },
+    });
+
     //get cart items from db
-    const cartItems = await db.cartItem.findMany();
+    const cartItems = await db.cartItem.findMany({
+      where: {
+        cartId: userCart?.id,
+        cart: {
+          userId: userId,
+        },
+      },
+    });
 
     // get products from db
     const products = await db.products.findMany({
@@ -27,7 +40,6 @@ export async function POST(req: Request, res: Response) {
         id: {
           in: cartItems.map(item => item.productId),
         },
-        userId: userId,
       },
     });
 

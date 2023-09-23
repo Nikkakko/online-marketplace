@@ -9,21 +9,29 @@ import { useRouter } from 'next/navigation';
 
 interface CheckoutFormProps {}
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({}) => {
+const CheckoutForm: React.FC<CheckoutFormProps> = () => {
   const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
   const { toast } = useToast();
 
   const onPurchase = async () => {
     try {
       setLoading(true);
       const res = await axios.post('/api/stripe/checkout-session');
-
       window.location.href = res.data.url;
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Something went wrong, please try again later.',
-      });
+    } catch (error: any) {
+      if (error.response.status === 401) {
+        toast({
+          title: 'Unauthorized',
+          description: 'You must be logged in to continue',
+        });
+        router.push('/signin');
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Something went wrong, please try again later.',
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -31,7 +39,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({}) => {
   return (
     <Button
       type='submit'
-      onClick={onPurchase}
+      onClick={() => onPurchase()}
       disabled={loading}
       className='w-full
     '

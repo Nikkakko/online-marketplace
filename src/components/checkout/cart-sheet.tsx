@@ -11,7 +11,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
-import { cn, formatPrice } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { getCartItems } from '@/app/_actions/cart';
 import { Badge } from '../ui/badge';
 import { CartLineItems } from './cart-line-items';

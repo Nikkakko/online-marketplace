@@ -1,7 +1,7 @@
 'use client';
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 
-import { addToCart, updateItemQuantity } from '@/app/_actions/cart';
+import { addToCart } from '@/app/_actions/cart';
 import { Button } from './ui/button';
 import { Icons } from './icons';
 

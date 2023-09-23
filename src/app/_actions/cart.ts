@@ -46,6 +46,7 @@ export async function addToCart(productId: string, quantity: number) {
         cartId: newCart.id,
         productId,
         quantity,
+        userId: user?.id as string,
       },
     });
   } else {
@@ -54,6 +55,7 @@ export async function addToCart(productId: string, quantity: number) {
       where: {
         productId,
         cartId: cart.id,
+        userId: user?.id,
       },
     });
 
@@ -74,6 +76,7 @@ export async function addToCart(productId: string, quantity: number) {
           cartId: cart.id,
           productId,
           quantity,
+          userId: user?.id as string,
         },
       });
     }
@@ -142,6 +145,31 @@ export async function updateItemQuantity(id: string, quantity: number) {
 
   if (!cart) {
     throw new Error('Cart not found');
+  }
+
+  //check product quantity is > than quantity
+  const cartItem = await db.cartItem.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!cartItem) {
+    throw new Error('Cart item not found');
+  }
+
+  const product = await db.products.findUnique({
+    where: {
+      id: cartItem.productId,
+    },
+  });
+
+  if (!product) {
+    throw new Error('Product not found');
+  }
+
+  if (product.quantity < quantity) {
+    throw new Error('Product is out of stock, please try again later');
   }
 
   await db.cartItem.update({

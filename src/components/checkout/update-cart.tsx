@@ -4,6 +4,7 @@ import { removeItemFromCart, updateItemQuantity } from '@/app/_actions/cart';
 import { CartLineItem } from '@/types';
 import { Button } from '../ui/button';
 import { Icons } from '../icons';
+import { useToast } from '../ui/use-toast';
 
 interface UpdateCartProps {
   cartLineItem: CartLineItem;
@@ -11,6 +12,18 @@ interface UpdateCartProps {
 
 export default function UpdateCart({ cartLineItem }: UpdateCartProps) {
   const [isPending, startTransition] = React.useTransition();
+  const { toast } = useToast();
+
+  const updateQuantity = async (id: string, quantity: number) => {
+    try {
+      await updateItemQuantity(id, quantity);
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: 'Product quantity cannot be more than stock quantity.',
+      });
+    }
+  };
 
   return (
     <div className='flex items-center justify-normal space-x-2 md:space-x-10 '>
@@ -22,7 +35,7 @@ export default function UpdateCart({ cartLineItem }: UpdateCartProps) {
           disabled={isPending || cartLineItem.quantity === 1}
           onClick={() => {
             startTransition(() => {
-              updateItemQuantity(cartLineItem.id, cartLineItem.quantity - 1);
+              updateQuantity(cartLineItem.id, cartLineItem.quantity - 1);
             });
           }}
         >
@@ -36,7 +49,7 @@ export default function UpdateCart({ cartLineItem }: UpdateCartProps) {
           disabled={isPending}
           onClick={() => {
             startTransition(() => {
-              updateItemQuantity(cartLineItem.id, cartLineItem.quantity + 1);
+              updateQuantity(cartLineItem.id, cartLineItem.quantity + 1);
             });
           }}
         >
