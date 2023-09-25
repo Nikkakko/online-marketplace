@@ -58,11 +58,21 @@ export async function getProductsAction(
 }
 
 export async function addProductsAction(
-  input: z.infer<typeof addProductsSchema>
+  input: z.infer<typeof addProductsSchema>,
+  images:
+    | {
+        id: string;
+        url: string;
+        name: string;
+      }[]
+    | null
 ) {
-  const { title, description, price, category, images } = input;
+  const { title, description, price, category } = input;
   const { userId, user } = auth();
   const sellerEmail = getUserEmail(user);
+  const getImages = images?.map(image => image.url);
+
+  const priceToNumber = Number(price);
 
   const isPro = await checkSubscription();
   const freeTrial = await checkProductLimitCount();
@@ -78,9 +88,9 @@ export async function addProductsAction(
       quantity: 1,
       rating: 0,
       seller: sellerEmail.toLowerCase().split('@')[0],
-      price: price,
+      price: priceToNumber,
       category: category,
-      images: images,
+      images: getImages,
       userId: userId as string,
     },
   });

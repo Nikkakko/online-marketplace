@@ -1,12 +1,5 @@
 import * as z from 'zod';
-// import { $Enums, Category } from '@prisma/client';
-
-enum Category {
-  clothing = 'clothing',
-  shoes = 'shoes',
-  accessories = 'accessories',
-  sports = 'sports',
-}
+import { Category } from '@prisma/client';
 
 export const getProductsSchema = z.object({
   limit: z.number().default(10),
@@ -71,9 +64,11 @@ export const addProductsSchema = z.object({
     })
     .max(500),
 
-  price: z.number().min(1).max(1000000),
+  images: z.array(z.string().url()),
+
+  price: z.string().regex(/^\d+(\.\d{1,2})?$/, {
+    message: 'Must be a valid price',
+  }),
 
   category: z.nativeEnum(Category),
-
-  images: z.array(z.string()).min(1).max(5),
 });

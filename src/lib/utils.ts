@@ -13,6 +13,11 @@ export function getUserEmail(user: User | null | undefined) {
 
   return email;
 }
+export function isArrayOfFile(files: unknown): files is File[] {
+  const isArray = Array.isArray(files);
+  if (!isArray) return false;
+  return files.every(file => file instanceof File);
+}
 
 export function getUserFullName(user: User | null) {
   const firstName = user?.firstName ?? '';

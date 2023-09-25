@@ -3,13 +3,10 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
 import db from '@/lib/db';
-import { currentUser, auth } from '@clerk/nextjs';
 import { CartItem } from '@prisma/client';
 
 export async function POST(req: Request, res: Response) {
   const body = await req.text();
-  const user = await currentUser();
-  const { userId } = auth();
 
   const signature = headers().get('Stripe-Signature') ?? '';
 

@@ -6,6 +6,7 @@ const nextConfig = {
       'res.cloudinary.com',
       'img.clerk.com',
       'images.unsplash.com',
+      'utfs.io',
     ],
   },
   experimental: {

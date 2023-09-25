@@ -2,6 +2,7 @@ import type { Products } from '@prisma/client';
 import { type Icons } from '@/components/icons';
 import * as z from 'zod';
 import { cartItemSchema, cartLineItemSchema } from '@/lib/validations/cart';
+import { type FileWithPath } from 'react-dropzone';
 
 export interface Category {
   title: Products['category'];
@@ -41,6 +42,10 @@ export interface Review {
   userId: string;
   createdAt: Date;
 }
+
+export type FileWithPreview = FileWithPath & {
+  preview: string;
+};
 
 export interface NavItemWithChildren extends NavItem {
   items: NavItemWithChildren[];
