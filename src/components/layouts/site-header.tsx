@@ -18,6 +18,7 @@ import {
 } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Icons } from '../icons';
+import { ThemeToggle } from './theme-toggle';
 
 interface SiteHeaderProps {
   user: User | null;
@@ -37,6 +38,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
           <nav className='flex items-center space-x-4'>
             <SearchBox />
             <CartSheet />
+            <ThemeToggle />
 
             {user ? (
               <DropdownMenu>

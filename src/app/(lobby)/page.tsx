@@ -15,6 +15,7 @@ export default async function IndexPage() {
       createdAt: 'desc',
     },
   });
+
   return (
     <Shell className='gap-12'>
       <section

@@ -20,11 +20,11 @@ import PaginationButton from './pagination-button';
 
 type Props = {
   products: Products[];
-  category: string;
+
   pageCount: number;
 };
 
-const Products = ({ products, category, pageCount }: Props) => {
+const Products = ({ products, pageCount }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = React.useTransition();

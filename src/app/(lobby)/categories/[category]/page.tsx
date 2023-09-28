@@ -1,7 +1,5 @@
 import { Shell } from '@/components/shell/shell';
 import { $Enums } from '@prisma/client';
-
-import db from '@/lib/db';
 import Products from '@/components/products';
 import { getProductsAction } from '@/app/_actions/product';
 
@@ -40,11 +38,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         </p>
       </div>
 
-      <Products
-        products={getProducts.products}
-        category={category}
-        pageCount={pageCount}
-      />
+      <Products products={getProducts.products} pageCount={pageCount} />
     </Shell>
   );
 }

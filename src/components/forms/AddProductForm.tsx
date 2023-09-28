@@ -1,12 +1,11 @@
 'use client';
 // import '@uploadthing/react/styles.css';
 import * as React from 'react';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,7 +18,7 @@ import { useForm } from 'react-hook-form';
 
 import { type z } from 'zod';
 import { useToast } from '../ui/use-toast';
-import { addProductsAction } from '@/app/_actions/product';
+import { addProductsAction, updateProductAction } from '@/app/_actions/product';
 import { addProductsSchema } from '@/lib/validations/product';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -35,33 +34,37 @@ import { Icons } from '../icons';
 import { productCategories } from '@/config/products';
 import type { OurFileRouter } from '@/app/api/uploadthing/core';
 import Image from 'next/image';
-import { UploadFileResponse } from 'uploadthing/client';
 import { cn, isArrayOfFile } from '@/lib/utils';
-import { get } from 'http';
-import { UploadButton } from '@/utils/uploadthing';
-import { FileWithPreview } from '@/types';
 
-interface AddProductFormProps {}
+import { FileWithPreview } from '@/types';
+import { Products } from '@prisma/client';
+
+interface AddProductFormProps {
+  initialData?: Products;
+}
 
 type Inputs = z.infer<typeof addProductsSchema>;
 const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
-const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
+const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
+  const { toast } = useToast();
   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null);
+  const [initialImages, setInitialImages] = React.useState<
+    string[] | undefined
+  >(initialData?.images);
 
   const [isPending, startTransition] = React.useTransition();
-
-  const { toast } = useToast();
   const { isUploading, startUpload } = useUploadThing('imageUploader');
+
+  const priceAsString = initialData?.price.toString();
 
   const form = useForm<Inputs>({
     resolver: zodResolver(addProductsSchema),
     defaultValues: {
-      title: '',
-      category: 'clothing',
-      description: '',
-      price: '',
-      images: [],
+      title: initialData?.title ?? '',
+      category: initialData?.category ?? 'clothing',
+      description: initialData?.description ?? '',
+      price: priceAsString ?? '',
     },
   });
 
@@ -103,7 +106,24 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
             })
           : null;
 
-        console.log(images);
+        // if (initialData) {
+        //   await updateProductAction(initialData?.id, {
+        //     title: data.title,
+        //     description: data.description,
+        //     category: data.category,
+        //     price: parseInt(data.price),
+        //     images: images ?? initialImages,
+        //   });
+        //   toast({
+        //     title: 'Product updated successfully',
+        //     description: 'Product has been updated successfully.',
+
+        //     duration: 5000,
+        //   });
+
+        //   form.reset();
+        //   return;
+        // }
 
         await addProductsAction(data, images ?? null);
 
@@ -156,6 +176,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
               <FormControl>
                 <Textarea
                   placeholder='Type product description here'
+                  className='resize-none'
                   {...field}
                 />
               </FormControl>
@@ -221,7 +242,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
           <FormControl>
             {files && (
               <div className='flex flex-wrap gap-2'>
-                {files.map(file => (
+                {files?.map(file => (
                   <div
                     key={file.name}
                     className='relative w-20 h-20 overflow-hidden rounded-md'
@@ -234,7 +255,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
                     />
                     <Button
                       type='button'
-                      className='absolute top-0 right-0 z-10 p-1 text-white bg-red-500 rounded-full'
+                      className='absolute top-0 right-0 z-10 p-2 text-white bg-red-500 rounded-full'
                       onClick={() => {
                         setFiles(
                           files =>
@@ -253,12 +274,57 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
             message={form.formState.errors.images?.message}
           />
         </FormItem>
+        {initialImages && (
+          <div className='flex flex-wrap gap-2'>
+            {initialImages?.map(image => (
+              <div
+                key={image}
+                className='relative w-20 h-20 overflow-hidden rounded-md'
+              >
+                <Image
+                  src={image}
+                  alt={image}
+                  fill
+                  className='absolute inset-0 object-cover w-full h-full'
+                />
+                <Button
+                  type='button'
+                  className='absolute top-0 right-0 z-10 p-2 text-white bg-red-500 rounded-full'
+                  onClick={() => {
+                    setInitialImages(
+                      images =>
+                        images?.filter(img => img !== image) ?? undefined
+                    );
+                  }}
+                >
+                  <Icons.remove className='w-4 h-4' />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <label htmlFor='imageUploader' className='file-upload-button'>
+          <div
+            className={cn(
+              'flex items-center justify-center gap-2 border-2 border-dashed rounded-md cursor-pointer hover:border-primary-foreground p-4',
+              isPending || isUploading ? 'opacity-50 pointer-events-none' : ''
+            )}
+            aria-label='Click to upload images'
+          >
+            <Icons.upload className='w-6 h-6' />
+            <span>Upload images</span>
+          </div>
+        </label>
 
         <Input
           type='file'
+          id='imageUploader'
           multiple
           accept='image/*'
           onChange={handleFileChange}
+          className='hidden'
+          disabled={isPending || isUploading}
         />
 
         <Button
@@ -266,7 +332,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({}) => {
           className='w-full'
           disabled={isPending || isUploading}
         >
-          Add product
+          {initialData ? 'Update Product' : 'Add Product'}
         </Button>
       </form>
     </Form>

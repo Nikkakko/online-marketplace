@@ -4,7 +4,7 @@ import {
   getProductsSchema,
   reviewProductSchema,
 } from '@/lib/validations/product';
-import { $Enums } from '@prisma/client';
+import { $Enums, Products } from '@prisma/client';
 import { type z } from 'zod';
 import db from '@/lib/db';
 import { auth } from '@clerk/nextjs';
@@ -141,6 +141,60 @@ export async function deleteReviewAction(reviewId: string) {
     where: {
       id: reviewId,
     },
+  });
+
+  revalidatePath('/');
+}
+
+export async function deleteProductAction(productId: string) {
+  const { userId } = auth();
+
+  const product = await db.products.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+
+  if (product?.userId !== userId) {
+    throw new Error('You are not authorized to delete this product');
+  }
+
+  await db.products.delete({
+    where: {
+      id: productId,
+    },
+  });
+
+  revalidatePath('/');
+}
+
+export async function updateProductAction(
+  productId: string | undefined,
+  input: {
+    title: string;
+    description: string;
+    price: number;
+    category: Products['category'];
+    images: string[];
+  }
+) {
+  const { userId } = auth();
+
+  const product = await db.products.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+
+  if (product?.userId !== userId) {
+    throw new Error('You are not authorized to update this product');
+  }
+
+  await db.products.update({
+    where: {
+      id: productId,
+    },
+    data: input,
   });
 
   revalidatePath('/');

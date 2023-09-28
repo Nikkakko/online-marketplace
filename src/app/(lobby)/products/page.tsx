@@ -27,11 +27,7 @@ const ProductPage = async ({ searchParams }: Props) => {
 
   return (
     <Shell>
-      <Products
-        products={getProducts.products}
-        pageCount={pageCount}
-        category=''
-      />
+      <Products products={getProducts.products} pageCount={pageCount} />
     </Shell>
   );
 };
