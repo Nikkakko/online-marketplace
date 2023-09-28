@@ -11,20 +11,14 @@ import db from '@/lib/db';
 
 interface Props {
   searchParams: {
-    sort:
-      | 'createdAt.asc'
-      | 'price.asc'
-      | 'category.asc'
-      | 'title.asc'
-      | 'createdAt.desc'
-      | 'price.desc'
-      | 'category.desc'
-      | 'title.desc';
+    sort: 'createdAt.asc' | 'price.asc' | 'category.asc' | 'title.asc';
+    page: string;
+    per_page: string;
   };
 }
 
 async function StoresPage({
-  searchParams: { sort = 'createdAt.desc' },
+  searchParams: { sort = 'createdAt.asc', page, per_page },
 }: Props) {
   const productLimitcount = await getProductLimitCount();
   const isPro = await checkSubscription();
@@ -33,7 +27,13 @@ async function StoresPage({
   const sortKey = sort?.split('.')[0];
   const sortValue = sort?.split('.')[1];
 
+  const limit = typeof per_page === 'string' ? parseInt(per_page) : 1;
+  const offset = typeof page === 'string' ? (parseInt(page) - 1) * limit : 0;
+
   const userProducts = await db.products.findMany({
+    skip: offset,
+    take: limit,
+
     where: {
       userId: user?.id as string,
     },
@@ -62,7 +62,11 @@ async function StoresPage({
           <AddProductForm />
         </TabsContent>
         <TabsContent value='my-products'>
-          <MyProductLIst userProducts={userProducts} />
+          <MyProductLIst
+            userProducts={userProducts}
+            limit={limit}
+            offset={offset}
+          />
         </TabsContent>
       </Tabs>
     </Shell>
