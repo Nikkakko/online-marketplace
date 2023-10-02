@@ -27,7 +27,7 @@ async function StoresPage({
   const sortKey = sort?.split('.')[0];
   const sortValue = sort?.split('.')[1];
 
-  const limit = typeof per_page === 'string' ? parseInt(per_page) : 1;
+  const limit = typeof per_page === 'string' ? parseInt(per_page) : 10;
   const offset = typeof page === 'string' ? (parseInt(page) - 1) * limit : 0;
 
   const userProducts = await db.products.findMany({

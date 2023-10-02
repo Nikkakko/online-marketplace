@@ -18,7 +18,11 @@ import { useForm } from 'react-hook-form';
 
 import { type z } from 'zod';
 import { useToast } from '../ui/use-toast';
-import { addProductsAction, updateProductAction } from '@/app/_actions/product';
+import {
+  addProductsAction,
+  removeImagesAction,
+  updateProductAction,
+} from '@/app/_actions/product';
 import { addProductsSchema } from '@/lib/validations/product';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -38,6 +42,7 @@ import { cn, isArrayOfFile } from '@/lib/utils';
 
 import { FileWithPreview } from '@/types';
 import { Products } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 
 interface AddProductFormProps {
   initialData?: Products;
@@ -48,6 +53,7 @@ const { useUploadThing } = generateReactHelpers<OurFileRouter>();
 
 const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
   const { toast } = useToast();
+  const router = useRouter();
   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null);
   const [initialImages, setInitialImages] = React.useState<
     string[] | undefined
@@ -80,6 +86,21 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
     setFiles(filesWithPreview);
   };
 
+  const handleImageUpdate = (image: string) => {
+    startTransition(async () => {
+      if (initialData?.id && initialImages) {
+        await removeImagesAction(
+          initialData?.id,
+          initialImages.filter(img => img !== image)
+        );
+      }
+
+      setInitialImages(
+        images => images?.filter(img => img !== image) ?? undefined
+      );
+    });
+  };
+
   React.useEffect(() => {
     return () => {
       if (!files) return;
@@ -91,8 +112,22 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
   function onSubmit(data: Inputs) {
     startTransition(async () => {
       try {
-        if (!files) {
+        if (!files && !initialImages) {
           throw new Error('No files selected');
+        }
+
+        // if files size is greater than 4mb
+        if (
+          files &&
+          files?.reduce((acc, file) => acc + file.size, 0) > 4000000
+        ) {
+          toast({
+            title: 'Error',
+            description: 'File size is too large. max 4mb.',
+
+            duration: 5000,
+          });
+          return;
         }
 
         const images = isArrayOfFile(files)
@@ -106,24 +141,26 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
             })
           : null;
 
-        // if (initialData) {
-        //   await updateProductAction(initialData?.id, {
-        //     title: data.title,
-        //     description: data.description,
-        //     category: data.category,
-        //     price: parseInt(data.price),
-        //     images: images ?? initialImages,
-        //   });
-        //   toast({
-        //     title: 'Product updated successfully',
-        //     description: 'Product has been updated successfully.',
+        if (initialData) {
+          await updateProductAction(initialData?.id, {
+            title: data.title,
+            description: data.description,
+            category: data.category,
+            price: parseInt(data.price),
+            images: images?.map(image => image.url) ?? [],
+          });
+          toast({
+            title: 'Product updated successfully',
+            description: 'Product has been updated successfully.',
 
-        //     duration: 5000,
-        //   });
+            duration: 5000,
+          });
 
-        //   form.reset();
-        //   return;
-        // }
+          form.reset();
+          router.push('/dashboard/stores');
+
+          return;
+        }
 
         await addProductsAction(data, images ?? null);
 
@@ -135,6 +172,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
         });
 
         form.reset();
+        router.push('/dashboard/stores');
         setFiles(null);
       } catch (error) {
         toast({
@@ -240,69 +278,68 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
         <FormItem>
           <FormLabel>Images</FormLabel>
           <FormControl>
-            {files && (
-              <div className='flex flex-wrap gap-2'>
-                {files?.map(file => (
-                  <div
-                    key={file.name}
-                    className='relative w-20 h-20 overflow-hidden rounded-md'
-                  >
-                    <Image
-                      src={URL.createObjectURL(file)}
-                      alt={file.name}
-                      fill
-                      className='absolute inset-0 object-cover w-full h-full'
-                    />
-                    <Button
-                      type='button'
-                      className='absolute top-0 right-0 z-10 p-2 text-white bg-red-500 rounded-full'
-                      onClick={() => {
-                        setFiles(
-                          files =>
-                            files?.filter(f => f.name !== file.name) ?? null
-                        );
-                      }}
+            <div className='flex flex-wrap gap-2'>
+              {files && (
+                <div className='flex flex-wrap gap-2'>
+                  {files?.map((file, idx) => (
+                    <div
+                      key={file.name}
+                      className='relative w-20 h-20 overflow-hidden rounded-md'
                     >
-                      <Icons.remove className='w-4 h-4' />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
+                      <Image
+                        src={URL.createObjectURL(file)}
+                        alt={file.name}
+                        fill
+                        className='absolute inset-0 object-cover w-full h-full'
+                      />
+                      <Button
+                        type='button'
+                        className='absolute top-0 right-0 z-10 p-2 text-white bg-red-500 rounded-full'
+                        onClick={async () => {
+                          setFiles(
+                            files =>
+                              files?.filter(f => f.name !== file.name) ?? null
+                          );
+                        }}
+                        disabled={isPending || isUploading}
+                      >
+                        <Icons.remove className='w-4 h-4' />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {initialImages && (
+                <div className='flex flex-wrap gap-2'>
+                  {initialImages?.map((image, idx) => (
+                    <div
+                      key={image}
+                      className='relative w-20 h-20 overflow-hidden rounded-md'
+                    >
+                      <Image
+                        src={image}
+                        alt={image}
+                        fill
+                        className='absolute inset-0 object-cover w-full h-full'
+                      />
+                      <Button
+                        type='button'
+                        className='absolute top-0 right-0 z-10 p-2 text-white bg-red-500 rounded-full'
+                        onClick={() => handleImageUpdate(image)}
+                        disabled={isPending || isUploading}
+                      >
+                        <Icons.remove className='w-4 h-4' />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </FormControl>
           <UncontrolledFormMessage
             message={form.formState.errors.images?.message}
           />
         </FormItem>
-        {initialImages && (
-          <div className='flex flex-wrap gap-2'>
-            {initialImages?.map(image => (
-              <div
-                key={image}
-                className='relative w-20 h-20 overflow-hidden rounded-md'
-              >
-                <Image
-                  src={image}
-                  alt={image}
-                  fill
-                  className='absolute inset-0 object-cover w-full h-full'
-                />
-                <Button
-                  type='button'
-                  className='absolute top-0 right-0 z-10 p-2 text-white bg-red-500 rounded-full'
-                  onClick={() => {
-                    setInitialImages(
-                      images =>
-                        images?.filter(img => img !== image) ?? undefined
-                    );
-                  }}
-                >
-                  <Icons.remove className='w-4 h-4' />
-                </Button>
-              </div>
-            ))}
-          </div>
-        )}
 
         <label htmlFor='imageUploader' className='file-upload-button'>
           <div

@@ -1,6 +1,12 @@
 import { slugify } from '@/lib/utils';
 import { productCategories } from './products';
 
+const links = {
+  github: 'https://github.com/Nikkakko/online-marketplace',
+  githubAccount: 'https://github.com/Nikkakko',
+  discord: 'https://discord.com/users/sadmann7',
+};
+
 export const siteConfig = {
   title: 'N-Store',
   description: `
@@ -28,4 +34,5 @@ export const siteConfig = {
       ],
     })),
   ],
+  links,
 };

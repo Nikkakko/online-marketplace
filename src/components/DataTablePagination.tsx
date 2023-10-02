@@ -22,8 +22,6 @@ const DataTablePagination: React.FC<DataTablePaginationProps> = ({
 }) => {
   const pageSizeOptions = [10, 20, 30, 40, 50];
 
-  // calculate page based on totalProducts and limit
-
   return (
     <div className='flex w-full flex-col items-center justify-between gap-4 overflow-auto px-2 py-1 sm:flex-row sm:gap-8'>
       <div className='flex items-center space-x-2'>

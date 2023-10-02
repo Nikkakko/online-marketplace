@@ -190,12 +190,75 @@ export async function updateProductAction(
     throw new Error('You are not authorized to update this product');
   }
 
+  const productImages = product?.images;
+
   await db.products.update({
     where: {
       id: productId,
     },
-    data: input,
+    data: {
+      title: input.title,
+      description: input.description,
+      price: input.price,
+      category: input.category,
+      images: [...productImages, ...input.images],
+    },
   });
 
   revalidatePath('/');
+}
+
+export async function removeImagesAction(
+  productId: string | undefined,
+  images: string[]
+) {
+  const { userId } = auth();
+
+  const product = await db.products.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+
+  if (product?.userId !== userId) {
+    throw new Error('You are not authorized to update this product');
+  }
+
+  await db.products.update({
+    where: {
+      id: productId,
+    },
+    data: {
+      images: images,
+    },
+  });
+
+  revalidatePath('/');
+}
+
+export async function filterProductsAction(query: string) {
+  if (query.length === 0) return null;
+
+  const products = await db.products.findMany({
+    where: {
+      title: {
+        contains: query,
+        mode: 'insensitive',
+      },
+    },
+
+    orderBy: {
+      createdAt: 'desc',
+    },
+
+    select: {
+      category: true,
+      title: true,
+      id: true,
+    },
+
+    take: 10,
+  });
+
+  return products;
 }

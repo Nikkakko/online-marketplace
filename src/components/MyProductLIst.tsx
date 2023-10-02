@@ -35,7 +35,6 @@ const MyProductLIst: React.FC<MyProductLIstProps> = ({
   offset,
 }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const handleSort = React.useCallback(
     (sort: { sort: string }) => {
@@ -45,7 +44,7 @@ const MyProductLIst: React.FC<MyProductLIstProps> = ({
 
       const url = qs.stringifyUrl(
         {
-          url: '/dashboard/stores',
+          url: window.location.href,
           query,
         },
         {
@@ -59,8 +58,6 @@ const MyProductLIst: React.FC<MyProductLIstProps> = ({
     [router]
   );
 
-  console.log(userProducts.length);
-
   const handleRowsPerPage = React.useCallback(
     (limit: number, page: number) => {
       const query = {
@@ -70,7 +67,7 @@ const MyProductLIst: React.FC<MyProductLIstProps> = ({
 
       const url = qs.stringifyUrl(
         {
-          url: '/dashboard/stores',
+          url: window.location.href,
           query,
         },
         {
@@ -115,15 +112,14 @@ const MyProductLIst: React.FC<MyProductLIstProps> = ({
         <TableHeader>
           <TableRow>
             {tableHeads.map((head, idx) => (
-              <TableHead
-                key={head.title}
-                className={cn(
-                  idx === tableHeads.length - 1 ? 'text-right' : 'text-left'
+              <TableHead key={head.title}>
+                <div
+                  className={cn(
+                    'flex flex-row items-center gap-2',
 
-                  //change color on hover
-                )}
-              >
-                <div className='flex flex-col items-start gap-1'>
+                    idx === tableHeads.length - 1 ? 'justify-end' : ''
+                  )}
+                >
                   {head.sort ? (
                     <SortDialog handleSort={handleSort} head={head} />
                   ) : (

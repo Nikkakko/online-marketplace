@@ -45,6 +45,7 @@ export interface Review {
 
 export type FileWithPreview = FileWithPath & {
   preview: string;
+  image?: string;
 };
 
 export interface NavItemWithChildren extends NavItem {

@@ -20,14 +20,6 @@ export const sortOptions = [
   },
 ];
 
-// categories
-// electronics
-//   clothing
-//   shoes
-//   accessories
-//   sports
-//   outdoor
-
 export const productCategories = [
   {
     title: 'clothing',
