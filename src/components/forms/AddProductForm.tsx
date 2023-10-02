@@ -35,7 +35,7 @@ import {
   SelectValue,
 } from '../ui/select';
 import { Icons } from '../icons';
-import { productCategories } from '@/config/products';
+import { getSubcategories, productCategories } from '@/config/products';
 import type { OurFileRouter } from '@/app/api/uploadthing/core';
 import Image from 'next/image';
 import { cn, isArrayOfFile } from '@/lib/utils';
@@ -69,10 +69,15 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
     defaultValues: {
       title: initialData?.title ?? '',
       category: initialData?.category ?? 'clothing',
+      subcategory: initialData?.subcategory ?? '',
       description: initialData?.description ?? '',
       price: priceAsString ?? '',
     },
   });
+
+  const subcategories = getSubcategories(form.watch('category'));
+
+  console.log(form.watch('category'));
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -249,6 +254,36 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
                             className='capitalize'
                           >
                             {option.title}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='subcategory'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormLabel>Subcategory</FormLabel>
+                <FormControl>
+                  <Select
+                    value={field.value?.toString()}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder='Select a subcategory' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {subcategories.map(option => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
                           </SelectItem>
                         ))}
                       </SelectGroup>

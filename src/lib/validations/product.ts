@@ -15,6 +15,8 @@ export const getProductsSchema = z.object({
     .optional()
     .nullable(),
 
+  subcategories: z.string().optional().nullable(),
+
   price: z
     .string()
     .regex(/^(asc|desc)$/)
@@ -56,6 +58,8 @@ export const addProductsSchema = z.object({
     .regex(/^[a-zA-Z0-9 ]+$/, {
       message: 'Title must only contain letters, numbers and spaces',
     }),
+
+    subcategory: z.string().min(3).max(100),
 
   description: z
     .string()

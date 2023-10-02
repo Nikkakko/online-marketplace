@@ -54,26 +54,29 @@ export const productCategories = [
     icon: Footprints,
     subcategories: [
       {
-        title: 'Low Tops',
-        description: 'Rad low tops shoes for a stylish low-profile look.',
-        slug: 'low-tops',
-      },
-
-      {
-        title: 'High Tops',
-        description: 'Elevate your style with rad high top shoes.',
-        slug: 'high-tops',
+        title: 'Mountain',
+        description: 'Shoes for mountain hiking.',
+        slug: 'mountain',
       },
       {
-        title: 'Slip-ons',
-        description: 'Effortless style with rad slip-on shoes.',
-        slug: 'slip-ons',
+        title: 'Running',
+        description: 'Shoes for running.',
+        slug: 'running',
       },
-
       {
-        title: 'Classics',
-        description: 'Timeless style with rad classic shoes.',
-        slug: 'classics',
+        title: 'Casual',
+        description: 'Casual shoes.',
+        slug: 'casual',
+      },
+      {
+        title: 'Sneakers',
+        description: 'Sneakers shoes.',
+        slug: 'sneakers',
+      },
+      {
+        title: 'Soccer',
+        description: 'Soccer shoes.',
+        slug: 'soccer',
       },
     ],
   },
@@ -86,14 +89,12 @@ export const productCategories = [
       {
         title: 'Skateboards',
         description: 'Skateboards, longboards, and more.',
-
         slug: 'skateboards',
       },
 
       {
         title: 'Basketball',
         description: 'Basketballs, hoops, and more.',
-
         slug: 'basketball',
       },
 
@@ -121,28 +122,13 @@ export const productCategories = [
           'Essential tools for maintaining your skateboard, all rad.',
         slug: 'skate-tools',
       },
+
       {
-        title: 'Bushings',
-        description: 'Upgrade your ride with our rad selection of bushings.',
-        slug: 'bushings',
+        title: 'Hats',
+        description: 'Keep the sun out of your eyes with our rad hats.',
+        slug: 'hats',
       },
-      {
-        title: 'Shock & Riser Pads',
-        description:
-          "Enhance your skateboard's performance with rad shock and riser pads.",
-        slug: 'shock-riser-pads',
-      },
-      {
-        title: 'Skate Rails',
-        description:
-          'Add creativity and style to your tricks with our rad skate rails.',
-        slug: 'skate-rails',
-      },
-      {
-        title: 'Wax',
-        description: 'Keep your board gliding smoothly with our rad skate wax.',
-        slug: 'wax',
-      },
+
       {
         title: 'Socks',
         description: 'Keep your feet comfy and stylish with our rad socks.',
@@ -153,6 +139,26 @@ export const productCategories = [
         description: 'Carry your gear in style with our rad backpacks.',
         slug: 'backpacks',
       },
+
+      {
+        title: 'Other',
+        description: 'Other accessories.',
+        slug: 'other',
+      },
     ],
   },
 ] satisfies Category[];
+
+export function getSubcategories(category?: string): Option[] {
+  if (!category) return [];
+
+  const subcategories =
+    productCategories
+      .find(c => c.title === category)
+      ?.subcategories.map(s => ({
+        label: s.title,
+        value: s.slug,
+      })) ?? [];
+
+  return subcategories;
+}

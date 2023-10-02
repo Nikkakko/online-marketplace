@@ -19,6 +19,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Icons } from '../icons';
 import { ThemeToggle } from './theme-toggle';
+import MobileNav from './mobile-nav';
+import { dashboardConfig } from '@/config/dashboard';
 
 interface SiteHeaderProps {
   user: User | null;
@@ -33,6 +35,10 @@ export function SiteHeader({ user }: SiteHeaderProps) {
     <header className='sticky top-0 z-50 w-full border-b bg-background'>
       <div className='container flex h-16 items-center'>
         <MainNav items={siteConfig.mainNav} />
+        <MobileNav
+          mainNavItems={siteConfig.mainNav}
+          sidebarNavItems={dashboardConfig.sidebarNav}
+        />
         {/* add mobile nav */}
         <div className='flex-1 flex justify-end items-center space-x-4'>
           <nav className='flex items-center space-x-4'>

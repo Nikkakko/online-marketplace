@@ -26,6 +26,10 @@ export function getUserFullName(user: User | null) {
   return `${firstName} ${lastName}`;
 }
 
+export function unslugify(str: string) {
+  return str.replace(/-/g, ' ');
+}
+
 export function slugify(str: string) {
   return str
     .toLowerCase()

@@ -36,6 +36,7 @@ model Products {
   description String
   images      String[]
   category    Category @default(clothing)
+  subcategory String    
   
 
   seller String

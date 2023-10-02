@@ -7,7 +7,7 @@ import {
 import { $Enums, Products } from '@prisma/client';
 import { type z } from 'zod';
 import db from '@/lib/db';
-import { auth } from '@clerk/nextjs';
+import { auth, currentUser } from '@clerk/nextjs';
 import { revalidatePath } from 'next/cache';
 import { getUserEmail } from '@/lib/utils';
 import { checkSubscription } from '@/lib/subscription';
@@ -17,7 +17,10 @@ import { NextResponse } from 'next/server';
 export async function getProductsAction(
   input: z.infer<typeof getProductsSchema>
 ) {
-  const { limit, offset, categories, sort, price } = input;
+  const { limit, offset, categories, sort, price, subcategories } = input;
+
+  const sortKey = sort?.split('.')[0] as string;
+  const sortDirection = sort?.split('.')[1] as 'asc' | 'desc';
 
   const products = await db.products.findMany({
     skip: offset,
@@ -27,20 +30,15 @@ export async function getProductsAction(
       category: {
         equals: categories as $Enums.Category,
       },
+
+      subcategory: {
+        equals: subcategories as string,
+      },
     },
 
-    orderBy: [
-      {
-        createdAt: sort === 'createdAt.asc' ? 'asc' : 'desc',
-      },
-      {
-        price: sort === 'price.asc' ? 'asc' : 'desc',
-      },
-
-      {
-        rating: sort === 'rating.asc' ? 'asc' : 'desc',
-      },
-    ],
+    orderBy: {
+      [sortKey]: sortDirection,
+    },
   });
 
   const count = await db.products.count({
@@ -67,9 +65,9 @@ export async function addProductsAction(
       }[]
     | null
 ) {
-  const { title, description, price, category } = input;
-  const { userId, user } = auth();
-  const sellerEmail = getUserEmail(user);
+  const { title, description, price, category, subcategory } = input;
+
+  const user = await currentUser();
   const getImages = images?.map(image => image.url);
 
   const priceToNumber = Number(price);
@@ -87,11 +85,12 @@ export async function addProductsAction(
       description: description,
       quantity: 1,
       rating: 0,
-      seller: sellerEmail.toLowerCase().split('@')[0],
+      seller: user?.emailAddresses?.[0].emailAddress.split('@')[0] as string,
       price: priceToNumber,
       category: category,
       images: getImages,
-      userId: userId as string,
+      userId: user?.id as string,
+      subcategory: subcategory,
     },
   });
 
