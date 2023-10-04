@@ -8,6 +8,7 @@
 - Clerk (Authentication)
 - Stripe (Payment,Subscription)
 - Webhooks (Stripe)
+- Prisma 
 - MongoDB (Database)
 - Tailwind CSS (Styling)
 - Uploadthing (Image Upload)
