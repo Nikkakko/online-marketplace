@@ -13,7 +13,7 @@ interface Props {
 }
 export default async function CategoryPage({ params, searchParams }: Props) {
   const { category } = params;
-  const { page, per_page, sort, price, rating } = searchParams;
+  const { page, per_page, sort, price,  } = searchParams;
 
   const limit = typeof per_page === 'string' ? parseInt(per_page) : 8;
   const offset = typeof page === 'string' ? (parseInt(page) - 1) * limit : 0;

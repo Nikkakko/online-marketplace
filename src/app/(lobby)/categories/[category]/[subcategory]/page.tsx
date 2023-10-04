@@ -18,8 +18,7 @@ interface SubcategoryProps {
 async function SubcategoryPage({ params, searchParams }: SubcategoryProps) {
   const { category, subcategory } = params;
 
-  const { page, per_page, sort, price_range, store_ids, store_page } =
-    searchParams;
+  const { page, per_page, sort } = searchParams;
 
   // Products transaction
   const limit = typeof per_page === 'string' ? parseInt(per_page) : 8;
@@ -46,9 +45,6 @@ async function SubcategoryPage({ params, searchParams }: SubcategoryProps) {
             unslugify(subcategory)
           )} in ${toTitleCase(unslugify(category))}`}
         </p>
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-          {/* add products */}
-        </div>
       </div>
 
       <ProductsComponent

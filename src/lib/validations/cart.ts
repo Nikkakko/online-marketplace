@@ -14,20 +14,5 @@ export const cartLineItemSchema = z.object({
   images: z.array(z.string()),
   description: z.string(),
   category: z.string(z.nativeEnum($Enums.Category)),
-  rating: z.number(),
   quantity: z.number().min(0),
 });
-// id: string;
-// userId: string;
-// title: string;
-// description: string;
-// images: string[];
-// category: $Enums.Category;
-// seller: string;
-// price: number;
-// quantity: number;
-// rating: number;
-// cartId: string | null;
-// orderId: string | null;
-// createdAt: Date;
-// updatedAt: Date;

@@ -9,7 +9,6 @@ import { type z } from 'zod';
 import db from '@/lib/db';
 import { auth, currentUser } from '@clerk/nextjs';
 import { revalidatePath } from 'next/cache';
-import { getUserEmail } from '@/lib/utils';
 import { checkSubscription } from '@/lib/subscription';
 import { checkProductLimitCount, increaseCount } from '@/lib/limit-count';
 import { NextResponse } from 'next/server';
@@ -76,7 +75,7 @@ export async function addProductsAction(
   const freeTrial = await checkProductLimitCount();
 
   if (!freeTrial && !isPro) {
-    return new NextResponse('Free trial limit reached', { status: 403 });
+    throw new Error('You have reached your free trial limit, please upgrade');
   }
 
   const product = await db.products.create({
@@ -84,7 +83,6 @@ export async function addProductsAction(
       title: title,
       description: description,
       quantity: 1,
-      rating: 0,
       seller: user?.emailAddresses?.[0].emailAddress.split('@')[0] as string,
       price: priceToNumber,
       category: category,
@@ -94,7 +92,12 @@ export async function addProductsAction(
     },
   });
 
+  if (!isPro) {
+    await increaseCount();
+  }
+
   revalidatePath('/');
+
   return {
     product: product,
   };
@@ -104,12 +107,11 @@ export async function addReviewToProductAction(
   input: z.infer<typeof reviewProductSchema>,
   productId: string
 ) {
-  const { rating, title, description } = input;
+  const { title, description } = input;
   const { userId } = auth();
 
   const review = await db.review.create({
     data: {
-      rating: rating,
       title: title,
       description: description,
       userId: userId as string,

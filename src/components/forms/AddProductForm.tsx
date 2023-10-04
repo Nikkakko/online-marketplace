@@ -77,8 +77,6 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
 
   const subcategories = getSubcategories(form.watch('category'));
 
-  console.log(form.watch('category'));
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const files = Array.from(e.target.files);
@@ -179,11 +177,11 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ initialData }) => {
         form.reset();
         router.push('/dashboard/stores');
         setFiles(null);
-      } catch (error) {
+      } catch (error: any) {
+        console.log(error);
         toast({
-          title: 'Error',
-          description: 'Something went wrong.',
-
+          title: `Error`,
+          description: `${error.message}`,
           duration: 5000,
         });
       }

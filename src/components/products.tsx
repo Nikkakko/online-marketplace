@@ -20,7 +20,6 @@ import PaginationButton from './pagination-button';
 
 type Props = {
   products: Products[];
-
   pageCount: number;
 };
 
@@ -60,12 +59,14 @@ const Products = ({ products, pageCount }: Props) => {
     <section className='flex flex-col space-y-6'>
       <div className='flex item-start'>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size='sm'>
-              Sort
-              <Icons.chevronDown className='w-4 h-4 ml-2' />
-            </Button>
-          </DropdownMenuTrigger>
+          {products.length > 0 && (
+            <DropdownMenuTrigger asChild>
+              <Button size='sm'>
+                Sort
+                <Icons.chevronDown className='w-4 h-4 ml-2' />
+              </Button>
+            </DropdownMenuTrigger>
+          )}
 
           <DropdownMenuContent align='start' className='w-48'>
             <DropdownMenuLabel>Sort by</DropdownMenuLabel>

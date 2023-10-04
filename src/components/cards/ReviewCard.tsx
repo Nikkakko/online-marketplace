@@ -11,10 +11,8 @@ import {
 import { clerkClient, currentUser } from '@clerk/nextjs';
 import { formatDate } from '@/lib/utils';
 import { Review } from '@/types';
-import Link from 'next/link';
 import DeleteUserReviewButton from '../DeleteUserReviewButton';
 import { Separator } from '../ui/separator';
-import { Icons } from '../icons';
 
 interface ReviewCardProps {
   review: Review;
@@ -34,18 +32,6 @@ const ReviewCard: React.FC<ReviewCardProps> = async ({ review }) => {
   //if so, show delete button
   const checkUser = user?.id === userId;
 
-  // stars for rating
-  const rating = review.rating;
-  const stars = [];
-  for (let i = 0; i < 5; i++) {
-    const starClassName = i < rating ? 'text-yellow-500' : 'text-gray-400';
-    stars.push(
-      <li key={i}>
-        <Icons.star className={starClassName} aria-hidden='true' />
-      </li>
-    );
-  }
-
   return (
     <Card>
       <CardHeader>
@@ -59,9 +45,6 @@ const ReviewCard: React.FC<ReviewCardProps> = async ({ review }) => {
       </CardContent>
       <Separator />
       <CardFooter className='flex flex-col items-start mt-2'>
-        <ul className='flex items-center space-x-1 text-sm text-yellow-500'>
-          {stars}
-        </ul>
         {checkUser && <DeleteUserReviewButton reviewId={review.id} />}
       </CardFooter>
     </Card>

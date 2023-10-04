@@ -22,7 +22,7 @@ import { useToast } from '../ui/use-toast';
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: Pick<
     Products,
-    'id' | 'title' | 'price' | 'images' | 'quantity' | 'rating' | 'seller'
+    'id' | 'title' | 'price' | 'images' | 'quantity'  | 'seller'
   >;
 }
 
@@ -93,12 +93,7 @@ export function ProductCard({
 
       <Link href={`/product/${product.id}`} tabIndex={-1}>
         <CardFooter className='flex items-center justify-between p-4'>
-          <div className='flex items-center space-x-1'>
-            <Icons.star className='w-4 h-4 text-yellow-400' />
-            <span className='text-sm text-muted-foreground'>
-              {product.rating}
-            </span>
-          </div>
+          
           <div className='flex items-center space-x-1'>
             <Icons.store className='w-4 h-4 text-muted-foreground' />
             <span className='text-sm text-muted-foreground'>

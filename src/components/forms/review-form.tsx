@@ -54,7 +54,7 @@ const ReviewForm: React.FC<Props> = ({ productName, productId }) => {
     resolver: zodResolver(reviewProductSchema),
     defaultValues: {
       description: '',
-      rating: 0,
+
       title: '',
     },
   });
@@ -136,35 +136,6 @@ const ReviewForm: React.FC<Props> = ({ productName, productId }) => {
                       className='resize-none'
                     />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='rating'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Rating</FormLabel>
-                  <Select
-                    onValueChange={value => {
-                      field.onChange(Number(value));
-                    }}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder='Select a Rating' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value='1'>1</SelectItem>
-                      <SelectItem value='2'>2</SelectItem>
-                      <SelectItem value='3'>3</SelectItem>
-                      <SelectItem value='4'>4</SelectItem>
-                      <SelectItem value='5'>5</SelectItem>
-                    </SelectContent>
-                  </Select>
-
                   <FormMessage />
                 </FormItem>
               )}

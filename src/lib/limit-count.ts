@@ -1,7 +1,7 @@
 import { auth } from '@clerk/nextjs';
 import db from '@/lib/db';
 
-const MAX_FREE_COUNTS = 3;
+export const MAX_FREE_COUNTS = 3;
 
 export const increaseCount = async () => {
   const { userId, user } = auth();

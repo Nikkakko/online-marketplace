@@ -25,7 +25,6 @@ export const getProductsSchema = z.object({
 });
 
 export const reviewProductSchema = z.object({
-  rating: z.number().min(1).max(5),
   title: z
     .string({
       required_error: 'Please enter a title for your review',
@@ -59,7 +58,7 @@ export const addProductsSchema = z.object({
       message: 'Title must only contain letters, numbers and spaces',
     }),
 
-    subcategory: z.string().min(3).max(100),
+  subcategory: z.string().min(3).max(100),
 
   description: z
     .string()

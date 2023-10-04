@@ -43,7 +43,6 @@ model Products {
 
   price    Float
   quantity Int
-  rating   Float // You can use a Float for product ratings for more precision
   reviews  Review[]
 
 
@@ -73,7 +72,7 @@ model Review {
 
   title     String
   description      String
-  rating    Int
+  
 
   // timestamps
   createdAt DateTime @default(now())

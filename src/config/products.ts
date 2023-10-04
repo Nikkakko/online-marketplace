@@ -10,14 +10,6 @@ export const sortOptions = [
   },
   { label: 'Price: Low to high', value: 'price.asc' },
   { label: 'Price: High to low', value: 'price.desc' },
-  {
-    label: 'Rating: Low to high',
-    value: 'rating.asc',
-  },
-  {
-    label: 'Rating: High to low',
-    value: 'rating.desc',
-  },
 ];
 
 export const productCategories = [

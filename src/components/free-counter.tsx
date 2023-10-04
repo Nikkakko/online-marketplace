@@ -2,11 +2,11 @@
 import { useMounted } from '@/hooks/use-mounted';
 import * as React from 'react';
 import ProModal from './pro-modal';
+import { MAX_FREE_COUNTS } from '@/lib/limit-count';
 
 interface FreeCounterProps {
   productLimitcount: number | undefined;
 }
-const MAX_FREE_PRODUCT_LIMIT = 3;
 
 const FreeProductCounter: React.FC<FreeCounterProps> = ({
   productLimitcount,
@@ -19,10 +19,17 @@ const FreeProductCounter: React.FC<FreeCounterProps> = ({
       className='flex flex-col items-center justify-center w-full p-4 mb-4 bg-background
     border  rounded-md'
     >
-      <p className='mb-2 text-sm text-center text-gray-500'>
-        You have {productLimitcount} of {MAX_FREE_PRODUCT_LIMIT} free products
-        remaining
-      </p>
+      {productLimitcount === MAX_FREE_COUNTS ? (
+        <p className='mb-2 text-sm text-center text-gray-500'>
+          You have reached your free product limit. Please upgrade to Pro to add
+          more products.
+        </p>
+      ) : (
+        <p className='mb-2 text-sm text-center text-gray-500'>
+          You have {productLimitcount} of {MAX_FREE_COUNTS} free products
+          remaining
+        </p>
+      )}
 
       <ProModal />
     </div>
