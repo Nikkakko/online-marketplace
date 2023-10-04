@@ -7,11 +7,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-
 import * as React from 'react';
 import { Button } from './ui/button';
 import { useToast } from './ui/use-toast';
 import axios from 'axios';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from './ui/card';
 
 interface ProModalProps {}
 
@@ -45,6 +52,29 @@ const ProModal: React.FC<ProModalProps> = ({}) => {
             This will allow you to add unlimited products to your store
           </DialogDescription>
         </DialogHeader>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Pro Plan</CardTitle>
+            <CardDescription>Unlimited Products</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ul className='space-y-2'>
+              <li>Unlimited Products</li>
+              <li>Unlimited Orders</li>
+              <li>Unlimited Customers</li>
+            </ul>
+          </CardContent>
+
+          <CardFooter>
+            {/* price */}
+            <div className='flex items-center justify-between'>
+              <span className='text-xl font-bold'>20$</span>
+              <span className='text-gray-500'>/month</span>
+            </div>
+          </CardFooter>
+        </Card>
+
         <DialogFooter>
           <Button type='submit' onClick={onSubscribe} disabled={loading}>
             Confirm
