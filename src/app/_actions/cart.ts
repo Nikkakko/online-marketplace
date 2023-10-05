@@ -3,6 +3,7 @@ import db from '@/lib/db';
 import { currentUser } from '@clerk/nextjs';
 import { User } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
+import { cookies } from 'next/headers';
 
 export async function addToCart(productId: string, quantity: number) {
   const user: User | null = await currentUser();
@@ -12,6 +13,10 @@ export async function addToCart(productId: string, quantity: number) {
       id: productId,
     },
   });
+
+  if (!user) {
+    throw new Error('User not found');
+  }
 
   if (!product) {
     throw new Error('Product not found');

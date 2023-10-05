@@ -22,7 +22,7 @@ import { useToast } from '../ui/use-toast';
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: Pick<
     Products,
-    'id' | 'title' | 'price' | 'images' | 'quantity'  | 'seller'
+    'id' | 'title' | 'price' | 'images' | 'quantity' | 'seller'
   >;
 }
 
@@ -42,6 +42,16 @@ export function ProductCard({
         toast({
           title: 'Could not add to cart',
           description: 'Product is out of stock, please try again later',
+        });
+      } else if (error.message === 'Product not found') {
+        toast({
+          title: 'Could not add to cart',
+          description: 'Product not found',
+        });
+      } else if (error.message === 'User not found') {
+        toast({
+          title: 'Error',
+          description: 'Sign in to add to cart',
         });
       } else {
         toast({
@@ -93,7 +103,6 @@ export function ProductCard({
 
       <Link href={`/product/${product.id}`} tabIndex={-1}>
         <CardFooter className='flex items-center justify-between p-4'>
-          
           <div className='flex items-center space-x-1'>
             <Icons.store className='w-4 h-4 text-muted-foreground' />
             <span className='text-sm text-muted-foreground'>
